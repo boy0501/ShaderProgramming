@@ -348,3 +348,18 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+/2021_ShaderProgrammingBaseProject/.vs
+/2021_ShaderProgrammingBaseProject/GLSLBase/x64
+/2021_ShaderProgrammingBaseProject/ipch
+*.exe
+*.ilk
+*.pdb
+*.obj
+*.log
+*.pch
+*.idb
+*.tlog
+*.lastbuildstate
+*.suo
+*.db

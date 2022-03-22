@@ -21,6 +21,7 @@ public:
 	GLuint CreateBmpTexture(char * filePath);
 	   
 	void Test();
+	void Lecture2();
 
 private:
 	void Initialize(int windowSizeX, int windowSizeY);

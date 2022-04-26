@@ -116,7 +116,7 @@ void Renderer::CreateVertexBufferObjects()
 
 void Renderer::CreateParticle(int count)
 {
-	int floatCount = count * (3 + 3 + 1 + 1 + 1 + 1 + 1) * 3 * 2;	//(XYZ+velocityXYZ + emit, life, amp, period, value) * vertex * 2
+	int floatCount = count * (3 + 3 + 1 + 1 + 1 + 1 + 1 + 4) * 3 * 2;	//(XYZ+velocityXYZ + emit, life, amp, period, value, rgba) * vertex * 2
 	float* particleVertices = new float[floatCount];
 	int vertexCount = count * 3 * 2;
 
@@ -135,6 +135,7 @@ void Renderer::CreateParticle(int count)
 		float randomAmp = 0.f;
 		float randomPeriod = 0.f;
 		float randomValue = 0.f;
+		float randomR, randomG, randomB, randomA = 0.f;
 
 		randomValueX = 0.f;//((float)rand() / (float)RAND_MAX - 0.5f) * 2.f;//-1~1
 		randomValueY = 0.f;// ((float)rand() / (float)RAND_MAX - 0.5f) * 2.f;//-1~1
@@ -150,7 +151,10 @@ void Renderer::CreateParticle(int count)
 		randomAmp =  ((float)rand() / (float)RAND_MAX) * 0.4f - 0.2f;
 		randomPeriod = ((float)rand() / (float)RAND_MAX) * 2.f;
 		randomValue = ((float)rand() / (float)RAND_MAX) * 1.f;
-
+		randomR = ((float)rand() / (float)RAND_MAX) * 1.f;
+		randomG = ((float)rand() / (float)RAND_MAX) * 1.f;
+		randomB = ((float)rand() / (float)RAND_MAX) * 1.f;
+		randomA = 1.f;
 		//v0
 		particleVertices[index] = -particleSize / 2.f + randomValueX;
 		index++;
@@ -176,6 +180,14 @@ void Renderer::CreateParticle(int count)
 		index++;	//Period
 		particleVertices[index] = randomValue;
 		index++;	//Value
+		particleVertices[index] = randomR;
+		index++;	//Random Color
+		particleVertices[index] = randomG;
+		index++;	//Random Color
+		particleVertices[index] = randomB;
+		index++;	//Random Color
+		particleVertices[index] = randomA;
+		index++;	//Random Color
 
 		//v1
 		particleVertices[index] = particleSize / 2.f + randomValueX;
@@ -202,6 +214,14 @@ void Renderer::CreateParticle(int count)
 		index++;	//Period
 		particleVertices[index] = randomValue;
 		index++;	//Value
+		particleVertices[index] = randomR;
+		index++;	//Random Color
+		particleVertices[index] = randomG;
+		index++;	//Random Color
+		particleVertices[index] = randomB;
+		index++;	//Random Color
+		particleVertices[index] = randomA;
+		index++;	//Random Color
 
 		//v2
 		particleVertices[index] = particleSize / 2.f + randomValueX;
@@ -228,6 +248,14 @@ void Renderer::CreateParticle(int count)
 		index++;	//Period
 		particleVertices[index] = randomValue;
 		index++;	//Value
+		particleVertices[index] = randomR;
+		index++;	//Random Color
+		particleVertices[index] = randomG;
+		index++;	//Random Color
+		particleVertices[index] = randomB;
+		index++;	//Random Color
+		particleVertices[index] = randomA;
+		index++;	//Random Color
 
 		//v3
 		particleVertices[index] = -particleSize / 2.f + randomValueX;
@@ -254,6 +282,14 @@ void Renderer::CreateParticle(int count)
 		index++;	//Period
 		particleVertices[index] = randomValue;
 		index++;	//Value
+		particleVertices[index] = randomR;
+		index++;	//Random Color
+		particleVertices[index] = randomG;
+		index++;	//Random Color
+		particleVertices[index] = randomB;
+		index++;	//Random Color
+		particleVertices[index] = randomA;
+		index++;	//Random Color
 
 		//v4
 		particleVertices[index] = particleSize / 2.f + randomValueX;
@@ -280,6 +316,14 @@ void Renderer::CreateParticle(int count)
 		index++;	//Period
 		particleVertices[index] = randomValue;
 		index++;	//Value
+		particleVertices[index] = randomR;
+		index++;	//Random Color
+		particleVertices[index] = randomG;
+		index++;	//Random Color
+		particleVertices[index] = randomB;
+		index++;	//Random Color
+		particleVertices[index] = randomA;
+		index++;	//Random Color
 
 		//v5
 		particleVertices[index] = -particleSize / 2.f + randomValueX;
@@ -306,6 +350,14 @@ void Renderer::CreateParticle(int count)
 		index++;	//Period
 		particleVertices[index] = randomValue;
 		index++;	//Value
+		particleVertices[index] = randomR;
+		index++;	//Random Color
+		particleVertices[index] = randomG;
+		index++;	//Random Color
+		particleVertices[index] = randomB;
+		index++;	//Random Color
+		particleVertices[index] = randomA;
+		index++;	//Random Color
 
 	}
 
@@ -612,31 +664,35 @@ void Renderer::Lecture3_Particle()
 
 	int attribPosition = glGetAttribLocation(shader, "a_Position");
 	glEnableVertexAttribArray(attribPosition);
-	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 11, 0);
+	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 15, 0);
 
 	int attriVelocity = glGetAttribLocation(shader, "a_Velocity");
 	glEnableVertexAttribArray(attriVelocity);
-	glVertexAttribPointer(attriVelocity, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 11, (GLvoid*)(sizeof(float) * 3));
+	glVertexAttribPointer(attriVelocity, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 15, (GLvoid*)(sizeof(float) * 3));
 
 	int attriEmitTime = glGetAttribLocation(shader, "a_EmitTime");
 	glEnableVertexAttribArray(attriEmitTime);
-	glVertexAttribPointer(attriEmitTime, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 11, (GLvoid*)(sizeof(float) * 6));
+	glVertexAttribPointer(attriEmitTime, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 15, (GLvoid*)(sizeof(float) * 6));
 
 	int attriLifeTime = glGetAttribLocation(shader, "a_LifeTime");
 	glEnableVertexAttribArray(attriLifeTime);
-	glVertexAttribPointer(attriLifeTime, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 11, (GLvoid*)(sizeof(float) * 7));
+	glVertexAttribPointer(attriLifeTime, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 15, (GLvoid*)(sizeof(float) * 7));
 
 	int attriAmp = glGetAttribLocation(shader, "a_Amp");
 	glEnableVertexAttribArray(attriAmp);
-	glVertexAttribPointer(attriAmp, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 11, (GLvoid*)(sizeof(float) * 8));
+	glVertexAttribPointer(attriAmp, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 15, (GLvoid*)(sizeof(float) * 8));
 
 	int attriPeriod = glGetAttribLocation(shader, "a_Period");
 	glEnableVertexAttribArray(attriPeriod);
-	glVertexAttribPointer(attriPeriod, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 11, (GLvoid*)(sizeof(float) * 9));
+	glVertexAttribPointer(attriPeriod, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 15, (GLvoid*)(sizeof(float) * 9));
 
 	int attriRandomValue = glGetAttribLocation(shader, "a_RandomValue");
 	glEnableVertexAttribArray(attriRandomValue);
-	glVertexAttribPointer(attriRandomValue, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 11, (GLvoid*)(sizeof(float) * 10));
+	glVertexAttribPointer(attriRandomValue, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 15, (GLvoid*)(sizeof(float) * 10));
+
+	int attriColor = glGetAttribLocation(shader, "a_Color");
+	glEnableVertexAttribArray(attriColor);
+	glVertexAttribPointer(attriColor, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 15, (GLvoid*)(sizeof(float) * 11));
 
 	int uniformTime = glGetUniformLocation(shader, "u_Time");
 	glUniform1f(uniformTime, gTime);

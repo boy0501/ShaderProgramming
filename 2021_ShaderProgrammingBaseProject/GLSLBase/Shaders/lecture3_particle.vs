@@ -42,7 +42,7 @@ void main()
 		newPos = newPos + t * a_Velocity + 0.5 * newAccel * tt;
 		vec3 rotVec = normalize(a_Velocity * g_RotMat);
 		newPos = newPos + 0.1 * amp * rotVec * sin(period * t * 2.0 * g_PI);
-		v_Color = a_Color * (1.0 + fractional);
+		v_Color = a_Color * (1.0 - fractional);
 	}else
 	{
 	

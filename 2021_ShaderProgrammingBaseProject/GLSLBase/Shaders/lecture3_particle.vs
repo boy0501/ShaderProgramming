@@ -6,6 +6,8 @@ in float a_EmitTime;
 in float a_LifeTime;
 in float a_Amp;
 in float a_Period;
+in float a_RandomValue;
+
 uniform float u_Time;
 
 uniform vec3 u_Accel;
@@ -22,6 +24,10 @@ void main()
 	float tt = t * t;
 	if(t > 0 && ( bLoop || t < a_LifeTime ))	//루프를 하려면 bLoop가 true일때 LifeTime 무시하고 if문으로 들어와줘야함.
 	{
+		newPos.x = sin(a_RandomValue * 2 * g_PI)* sin(a_RandomValue * 2 * g_PI);
+		newPos.y = cos(a_RandomValue * 2 * g_PI);
+		newPos.z = 0;
+		newPos = a_Position + newPos;
 		float temp = t / a_LifeTime;
 		float fractional = fract(temp);	//소수점 아래만 가져와줌
 		t = fractional * a_LifeTime;
@@ -29,7 +35,7 @@ void main()
 
 		float period = a_Period;
 		float amp = a_Amp; 
-		newPos = a_Position + t * a_Velocity + 0.5 * u_Accel * tt;
+		newPos = newPos + t * a_Velocity + 0.5 * u_Accel * tt;
 		vec3 rotVec = normalize(a_Velocity * g_RotMat);
 		newPos = newPos + t * amp * rotVec * sin(period * t * 2.0 * g_PI);
 	}else

@@ -8,7 +8,7 @@ uniform float u_Time;
 
 uniform vec3 u_Accel;
 
-bool bLoop = false;	//숙제.. 루프하냐 안하냐 시험에 나옴 
+bool bLoop = true;	//숙제.. 루프하냐 안하냐 시험에 나옴 
 
 void main()
 {

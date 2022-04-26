@@ -8,19 +8,24 @@ uniform float u_Time;
 
 uniform vec3 u_Accel;
 
+bool bLoop = false;	//숙제.. 루프하냐 안하냐 시험에 나옴 
+
 void main()
 {
 	vec3 newPos;
 	float t = u_Time - a_EmitTime;
 	float tt = t * t;
-	if(t > 0)
+	if(t > 0 && ( bLoop || t < a_LifeTime ))	//루프를 하려면 bLoop가 true일때 LifeTime 무시하고 if문으로 들어와줘야함.
 	{
+		float temp = t / a_LifeTime;
+		float fractional = fract(temp);	//소수점 아래만 가져와줌
+		t = fractional * a_LifeTime;
+		tt = t * t;
 		newPos = a_Position + t * a_Velocity + 0.5 * u_Accel * tt;
-		gl_Position = vec4(newPos, 1);
 	}else
 	{
 	
 		newPos = vec3(-1000000,-100000,-1000000);
-		//gl_Position = vec4(newPos, 1);	이걸 추가해야 EmitTime이 아닐때 안 보임
 	}
+		gl_Position = vec4(newPos, 1);
 }

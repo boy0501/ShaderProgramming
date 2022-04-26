@@ -142,7 +142,7 @@ void Renderer::CreateParticle(int count)
 		randomValueVZ = 0.f;
 
 		randomEmitTime = ((float)rand() / (float)RAND_MAX) * 5.f;
-		randomLifeTime = ((float)rand() / (float)RAND_MAX) * 2.f;
+		randomLifeTime = ((float)rand() / (float)RAND_MAX) * 0.5f;
 
 		//v0
 		particleVertices[index] = -particleSize / 2.f + randomValueX;

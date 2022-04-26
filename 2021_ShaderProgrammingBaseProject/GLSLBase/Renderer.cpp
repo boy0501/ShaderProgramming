@@ -139,12 +139,12 @@ void Renderer::CreateParticle(int count)
 		randomValueY = 0.f;// ((float)rand() / (float)RAND_MAX - 0.5f) * 2.f;//-1~1
 		randomValueZ = 0.f;
 		//원랜 normalize도 해야하지만 하지않음. -1~1은 빠르지만 셰이더에서 변경해줄예정
-		randomValueVX = 1.f;//((float)rand() / (float)RAND_MAX - 0.5f) * 2.f;//-1~1
-		randomValueVY = 0.f;// ((float)rand() / (float)RAND_MAX - 0.5f) * 2.f;//-1~1
+		randomValueVX =  ((float)rand() / (float)RAND_MAX - 0.5f) * 2.f;//-1~1
+		randomValueVY = ((float)rand() / (float)RAND_MAX - 0.5f) * 2.f;//-1~1
 		randomValueVZ = 0.f;
 
 		randomEmitTime = ((float)rand() / (float)RAND_MAX) * 5.f;
-		randomLifeTime = 1.f;// ((float)rand() / (float)RAND_MAX) * 1.f;
+		randomLifeTime = ((float)rand() / (float)RAND_MAX) * 2.f;
 
 		randomAmp =  ((float)rand() / (float)RAND_MAX) * 0.4f - 0.2f;
 		randomPeriod = ((float)rand() / (float)RAND_MAX) * 2.f ;
@@ -618,7 +618,7 @@ void Renderer::Lecture3_Particle()
 	int uniformTime = glGetUniformLocation(shader, "u_Time");
 	glUniform1f(uniformTime, gTime);
 	int uniformAccel = glGetUniformLocation(shader, "u_Accel");
-	glUniform3f(uniformAccel, 0.f, 0.0, 0.0);
+	glUniform3f(uniformAccel, 10.f, 10.0, 0.0);
 
 
 	gTime += 0.01f;

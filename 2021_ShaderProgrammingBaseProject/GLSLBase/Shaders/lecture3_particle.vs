@@ -12,7 +12,9 @@ uniform vec3 u_Accel;
 
 bool bLoop = true;	//숙제.. 루프하냐 안하냐 시험에 나옴 
 
-float g_PI = 3.14;
+const float g_PI = 3.14;
+const mat3 g_RotMat = mat3(0, -1, 0, 1, 0, 0 ,0 ,0 ,0); 
+
 void main()
 {
 	vec3 newPos;
@@ -26,10 +28,10 @@ void main()
 		tt = t * t;
 
 		float period = a_Period;
-		float amp = a_Amp;
-		newPos.x = a_Position.x + t * a_Velocity.x + 0.5 * u_Accel.x * tt;
-		newPos.y = a_Position.y + amp * sin(period * t * 2.0 * g_PI);
-		newPos.z = 0;
+		float amp = a_Amp; 
+		newPos = a_Position + t * a_Velocity + 0.5 * u_Accel * tt;
+		vec3 rotVec = normalize(a_Velocity * g_RotMat);
+		newPos = newPos + t * amp * rotVec * sin(period * t * 2.0 * g_PI);
 	}else
 	{
 	

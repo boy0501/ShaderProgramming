@@ -142,7 +142,7 @@ void Renderer::CreateParticle(int count)
 	int vertexCount = count * 3 * 2;
 
 	int index = 0;
-	float particleSize = 0.01f;
+	float particleSize = 0.1f;
 	for (int i = 0; i < count; i++)
 	{
 		float randomValueX = 0.f;
@@ -681,6 +681,9 @@ void Renderer::Lecture3_Particle()
 	GLuint shader = m_Lecture3ParticleShader;
 	glUseProgram(shader);
 
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBOManyParticle);
 
 	int attribPosition = glGetAttribLocation(shader, "a_Position");
@@ -727,6 +730,7 @@ void Renderer::Lecture3_Particle()
 	glDrawArrays(GL_TRIANGLES, 0, m_VBOManyParticleVertexCount);
 
 	glDisableVertexAttribArray(attribPosition);
+	glDisable(GL_BLEND);
 }
 
 void Renderer::Lecture4_FSSandBox()

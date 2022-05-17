@@ -27,7 +27,7 @@ void RenderScene(void)
 
 	// Renderer Test
 	//g_Renderer->Lecture3_Particle();
-	g_Renderer->Lecture4_RainDrop();
+	g_Renderer->Lecture4_RadarCircle();
 
 	glutSwapBuffers();
 }

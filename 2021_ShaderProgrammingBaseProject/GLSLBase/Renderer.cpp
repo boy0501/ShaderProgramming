@@ -787,3 +787,27 @@ void Renderer::Lecture4_RainDrop()
 
 	glDisableVertexAttribArray(attribPosition);
 }
+
+void Renderer::Lecture4_RadarCircle()
+{
+	GLuint shader = m_FSSandboxShader;
+	glUseProgram(shader);
+
+	int attribPosition = glGetAttribLocation(shader, "a_Position");
+	glEnableVertexAttribArray(attribPosition);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOSandbox);	//x,y,z ,r,g,b,a
+	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 7, 0);
+
+	int UniformPoints = glGetUniformLocation(shader, "u_Points");
+	glUniform3fv(UniformPoints, 10, g_points);
+
+	int UniformTime = glGetUniformLocation(shader, "u_Time");
+	glUniform1f(UniformTime, gTime);
+	gTime += 0.001;
+
+
+
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glDisableVertexAttribArray(attribPosition);
+}

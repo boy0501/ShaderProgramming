@@ -81,18 +81,18 @@ vec4 RadarCircle()
 {
 	float d = distance(vec2(0.5,0),v_Color.xy);
 	float sinValue = sin(d*2*PI - u_Time*100);
-	sinValue = pow(sinValue,4);
+	sinValue = clamp(pow(sinValue,4),0,1);
 	
-	vec4 returnColor = vec4(sinValue);
+	vec4 returnColor = vec4(0.5 * sinValue);
 
 	for(int i = 0 ; i < 10; ++i)
 	{
 		float dTemp = distance(u_Points[i].xy,v_Color.xy);
-		float temp = sin(dTemp*4*PI);
 		float dret = distance(returnColor.xy,vec2(0,0));
-		if(dTemp < 0.1 && dret > 0.5)
+		if(dTemp < 0.1)
 		{
-			returnColor += vec4(temp);
+			returnColor += 
+			vec4(0,10 * sinValue * (0.1 - dTemp),0,0);
 		}
 	}
 	return returnColor;
@@ -174,5 +174,6 @@ void main()
 	//FragColor = DrawCircle();
 	//FragColor = DrawCircleLine();
 	//FragColor = DrawCircles();
-	FragColor = RadarStick();
+	FragColor = RadarCircle();
+	//FragColor = RadarStick();
 }

@@ -2,10 +2,10 @@
 
 in vec3 a_Position;
 in vec3 a_Velocity;
-in float a_EmitTime;
-in float a_LifeTime;
-in float a_Amp;
-in float a_Period;
+in float a_EmitTime;//보여지기 시작 할 시간
+in float a_LifeTime;//총 보여질 시간
+in float a_Amp;		//진폭
+in float a_Period;	//주기
 in float a_RandomValue;
 in vec4 a_Color;
 
@@ -35,13 +35,18 @@ void main()
 		newPos = a_Position + newPos;
 		float temp = t / a_LifeTime;
 		float fractional = fract(temp);	//소수점 아래만 가져와줌
-		t = fractional * a_LifeTime;
+		t = fractional * a_LifeTime;	// 총 시간으로 나눈 다음 소숫점만 때 오고 다시 총 시간을 곱해줌으로 인해서 0~LifeTime 주기를 
+		//반복할 수 있게 된다. 
 		tt = t * t;
 
 		float period = a_Period;
 		float amp = a_Amp; 
 		newPos = newPos + t * a_Velocity + 0.5 * newAccel * tt;
-		vec3 rotVec = normalize(a_Velocity * g_RotMat);
+		vec3 rotVec = normalize(a_Velocity * g_RotMat);	//RotMat을 곱하는것은.속도벡터
+		//(어딘가로 향하려 하는 벡터)에다가 90도 회전행렬을 곱해서 나온 벡터를 기준으로
+		//위아래로 움직여야 정확하게 사인곡선을 그리기 때문에 구해주는 것 이다. 
+		//대각 부스터에 사용하기 위해 쓴 변수임.
+		// 벡터에 float의 sin값을 곱해서 벡터방향의로 진자운동하게끔 하는 것 .
 		newPos = newPos + 0.1 * amp * rotVec * sin(period * t * 2.0 * g_PI);
 		v_Color = a_Color * (1.0 - fractional);
 	}else

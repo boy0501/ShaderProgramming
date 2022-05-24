@@ -13,8 +13,8 @@ uniform float u_Time;
 vec4 CrossPattern()
 {
 	vec4 returnValue = vec4(1,1,1,1);
-	float XAxis = sin(10*(v_Color.x * 2 * PI) + PI/2);	//PI+2 뒤에 더하는거 시험에 낸다고함 .
-	float YAxis = sin(10*(v_Color.y * 2 * PI) + PI/2);
+	float XAxis = sin(4*(v_Color.x * 2 * PI) + PI/2);	//PI+2 뒤에 더하는거 시험에 낸다고함 .
+	float YAxis = sin(4*(v_Color.y * 2 * PI) + PI/2);
 	float resultColor = max(XAxis,YAxis);	//칠해진 곳만 구하려면 max로 높은것만 골라내면됨.
 	returnValue = vec4(resultColor);
 	
@@ -69,8 +69,8 @@ vec4 DrawCircles()
 	for(int i  = 0 ; i < 10; ++i)
 	{	
 		float d = distance(u_Points[i].xy,v_Color.xy);
-		float temp = sin (10 * d * 4 * PI -  u_Time * 100);
-		if(d < u_Time && u_Time < 0.1)
+		float temp = sin (10 * d * 4 * PI -  u_Time * 100);	//음,,,이건 이해를 못하것넴
+		if(d < u_Time)
 			returnColor += vec4(temp);
 		
 	}
@@ -164,6 +164,32 @@ vec4 RadarStick()
 	return returnColor;
 
 }
+
+float addSome(float a,out float b)
+{
+	a = a +1.0;
+	b =  a;
+	return a+b;
+}
+
+float addSome2(const in float a, float b)
+{
+	//a = a +1.0;
+	b =  a;
+	return a+b;
+}
+float addSome3(float a, inout float b)
+{
+	a = a +1.0;
+	b=  a;
+	return a+b;
+}
+float addSome4(in float a, float b)
+{
+	a = a +1.0;
+	b=  a;
+	return a+b;
+}
 void main()
 {
 	
@@ -175,7 +201,6 @@ void main()
 	//FragColor = CrossPattern();
 	//FragColor = DrawCircle();
 	//FragColor = DrawCircleLine();
-	//FragColor = DrawCircles();
-	FragColor = RadarCircle() * v_ColorOverride;
-	//FragColor = RadarStick();
+	FragColor = DrawCircles();
+	//FragColor = RadarCircle() * v_ColorOverride;
 }

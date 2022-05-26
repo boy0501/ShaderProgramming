@@ -55,7 +55,7 @@ vec4 DrawCircleLine()
 vec4 DrawMultipleCircles()
 {
 	float dis = distance(v_Color.xy,vec2(0.5,0.5));	// 0~0.5 임
-	float temp =  sin(dis * 4 * PI);	//원 10개 그리기 (시험문제) 
+	float temp =  sin(distance(v_Color.xy,vec2(0.5,0.5)) * 40 * PI);	//원 10개 그리기 (시험문제) 
 	//dis  = 0 부터 0.5까지 증가하는 좌표 
 	// *4를 해서 0 ~ 2 까지 증가하도록 만듬 그럼 0~2PI 까지의 1 주기의 sin 곡선이 만들어짐 
 	// sin 주기 1개당 원 1개임  10개그리고싶으면 10 곱하면 됨 
@@ -69,8 +69,8 @@ vec4 DrawCircles()
 	for(int i  = 0 ; i < 10; ++i)
 	{	
 		float d = distance(u_Points[i].xy,v_Color.xy);
-		float temp = sin (10 * d * 4 * PI -  u_Time * 100);	//음,,,이건 이해를 못하것넴
-		if(d < u_Time)
+		float temp = sin (10 * d * 2 * PI -  u_Time * 100);	//음,,,이건 이해를 못하것넴
+		if(d < 0.1)
 			returnColor += vec4(temp);
 		
 	}
@@ -81,7 +81,7 @@ vec4 DrawCircles()
 
 vec4 RadarCircle()
 {
-	float d = distance(vec2(0.5,0),v_Color.xy);
+	float d = distance(vec2(0.5,0.5),v_Color.xy);
 	float sinValue = sin(d*2*PI - u_Time*100);
 	sinValue = clamp(pow(sinValue,4),0,1);
 	
@@ -112,7 +112,7 @@ vec4 RadarStick()
 	vec2 B = vec2(0.5,-0.2);
 	vec2 D = vec2(-0.5,0.2);
 	vec2 C = vec2(-0.5,-0.2);
-	float radiantime = t * PI; 
+	float radiantime = t * PI * 20; 
 	float cosx = cos(radiantime);
 	float sinx = sin(radiantime);
 	mat2 rotate = mat2(cosx,-sinx,sinx,cosx);
@@ -132,7 +132,7 @@ vec4 RadarStick()
 	r3 += vec2(0.5,0.5);
 	r4 += vec2(0.5,0.5);
 	vec4 returnColor = vec4(0);
-
+	float ResValue = 0;
 	
 	//내부 점 판별 식 
 	vec2 AB =r2-r1;
@@ -144,20 +144,18 @@ vec4 RadarStick()
 	((0 <= dot(BC,BM)) && (dot(BC,BM) <= dot(BC,BC)))
 	)
 	{
-		returnColor = vec4(0.4);
+		ResValue = 0.4;
 	}else{
 	
-		returnColor = vec4(0);
+		ResValue = 0;
 	}
-
+	returnColor = vec4(ResValue);
 	for(int i = 0 ; i < 10; ++i)
 	{
 		float dTemp = distance(u_Points[i].xy,v_Color.xy);
-		float temp = sin(dTemp*4*PI);
-		float dret = distance(returnColor.xy,vec2(0,0));
-		if(dTemp < 0.1 && dret > 0.5)
+		if(dTemp < 0.1)
 		{
-			returnColor += vec4(dTemp);
+			returnColor += vec4(0,ResValue * dTemp * 10,0,0);
 		}
 	}
 
@@ -190,6 +188,16 @@ float addSome4(in float a, float b)
 	b=  a;
 	return a+b;
 }
+
+vec4 test()
+{
+	vec4 newColor = vec4(0,0,0,0);
+	mat3 m = mat3(1,1,0.5,0.5,1,1,1,1,1);
+	float a = m[0][2];
+	newColor = vec4(a);
+	return newColor;
+}
+
 void main()
 {
 	
@@ -198,9 +206,11 @@ void main()
 	//gpu가 좋아지면서 써도 됨 
 
 	
-	//FragColor = CrossPattern();
-	//FragColor = DrawCircle();
+	FragColor = CrossPattern();
+	//FragColor = DrawMultipleCircles();
+	//FragColor = DrawCircles();
 	//FragColor = DrawCircleLine();
-	FragColor = DrawCircles();
+	//FragColor = test();
 	//FragColor = RadarCircle() * v_ColorOverride;
+	//FragColor = RadarStick();
 }

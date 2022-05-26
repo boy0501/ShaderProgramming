@@ -194,7 +194,7 @@ void Renderer::CreateVertexBufferObjects()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(lecture4Pac1), &lecture4Pac1, GL_STATIC_DRAW);
 	//잦은 변경시 Dynamic_draw
 
-	rectSize = 1.f;
+	rectSize = 0.1f;
 	float lecture5_fullRect[]
 		=
 	{
@@ -219,7 +219,7 @@ void Renderer::CreateParticle(int count)
 	int vertexCount = count * 3 * 2;
 
 	int index = 0;
-	float particleSize = 0.1f;
+	float particleSize = 0.01f;
 	for (int i = 0; i < count; i++)
 	{
 		float randomValueX = 0.f;
@@ -239,7 +239,7 @@ void Renderer::CreateParticle(int count)
 		randomValueY = 0.f;// ((float)rand() / (float)RAND_MAX - 0.5f) * 2.f;//-1~1
 		randomValueZ = 0.f;
 		//원랜 normalize도 해야하지만 하지않음. -1~1은 빠르지만 셰이더에서 변경해줄예정
-		randomValueVX = ((float)rand() / (float)RAND_MAX - 0.5f) * 0.1f;//-1~1
+		randomValueVX =  ((float)rand() / (float)RAND_MAX - 0.5f) * 0.1f;//-1~1
 		randomValueVY = ((float)rand() / (float)RAND_MAX - 0.5f) * 0.1f;//-1~1
 		randomValueVZ = 0.f;
 
@@ -819,16 +819,16 @@ void Renderer::Lecture3_Particle()
 
 	int uniformTime = glGetUniformLocation(shader, "u_Time");
 	glUniform1f(uniformTime, gTime);
-	int uniformAccel = glGetUniformLocation(shader, "u_Accel");
-	glUniform3f(uniformAccel, 0.f, 0.0, 0.0);
 
+	int uniformAccel = glGetUniformLocation(shader, "u_Accel");
+	glUniform3f(uniformAccel, 10.f, 0.0, 0.0);
 
 	gTime += 0.01f;
 	//if (gTime > 1.f) gTime = 0.f;
 
 	glDrawArrays(GL_TRIANGLES, 0, m_VBOManyParticleVertexCount);
-
 	glDisableVertexAttribArray(attribPosition);
+
 	glDisable(GL_BLEND);
 }
 
@@ -919,7 +919,7 @@ void Renderer::Lecture4_RadarCircle()
 	int attribColor = glGetAttribLocation(shader, "a_Color");
 	glEnableVertexAttribArray(attribColor);
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBOPack0_Color);	//x,y,z
-	glVertexAttribPointer(attribColor, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
+	glVertexAttribPointer(attribColor, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 4, 0);
 	*/
 
 	int UniformPoints = glGetUniformLocation(shader, "u_Points");

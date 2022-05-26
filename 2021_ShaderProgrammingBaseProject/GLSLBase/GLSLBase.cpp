@@ -26,11 +26,11 @@ void RenderScene(void)
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 	// Renderer Test
-	//g_Renderer->Lecture3_Particle();
+//	g_Renderer->Lecture3_Particle();
 	g_Renderer->Lecture4_RadarCircle();
-	//g_Renderer->Lecture5_LineSegment();
+	////g_Renderer->Lecture5_LineSegment();
 	//g_Renderer->Lecture5_FullRect();
-
+	//g_Renderer->Lecture5_LineSegment();
 	glutSwapBuffers();
 }
 

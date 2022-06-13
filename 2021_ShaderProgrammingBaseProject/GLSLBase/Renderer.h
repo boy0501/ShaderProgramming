@@ -21,6 +21,7 @@ public:
 	GLuint CreateBmpTexture(char * filePath);
 	   
 	void CreateTextures();
+	void CreateDummyMesh();
 	void Test();
 	void Lecture2();
 	void Lecture3();
@@ -31,6 +32,7 @@ public:
 	void Lecture5_LineSegment();
 	void Lecture5_FullRect();
 	void Lecture6_TexSandbox();
+	void Lecture9_DummyMesh();
 
 private:
 	void Initialize(int windowSizeX, int windowSizeY);
@@ -95,5 +97,9 @@ private:
 	GLuint m_TextureSandboxShader = 0;
 	GLuint m_VBOTexSandbox = 0;
 	GLuint m_TexRGB = 0;
+
+	GLuint m_DummyVertexCount = 0;
+	GLuint m_VBODummyMesh = 0;
+	GLuint m_DummyMeshShader = 0;
 };
 

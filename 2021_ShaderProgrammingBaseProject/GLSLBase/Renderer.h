@@ -21,7 +21,6 @@ public:
 	GLuint CreateBmpTexture(char * filePath);
 	   
 	void CreateTextures();
-	void CreateDummyMesh();
 	void Test();
 	void Lecture2();
 	void Lecture3();
@@ -33,6 +32,7 @@ public:
 	void Lecture5_FullRect();
 	void Lecture6_TexSandbox();
 	void Lecture9_DummyMesh();
+	void FBORender();
 
 private:
 	void Initialize(int windowSizeX, int windowSizeY);
@@ -43,6 +43,9 @@ private:
 	unsigned char * Renderer::loadBMPRaw(const char * imagepath, unsigned int& outWidth, unsigned int& outHeight);
 	void CreateParticle(int count);
 	void CreateLine(int SegCount);
+	void CreateFBOs();
+	void DrawFullScreenTexture(GLuint texID);
+	void CreateDummyMesh();
 	bool m_Initialized = false;
 	
 	unsigned int m_WindowSizeX = 0;
@@ -101,5 +104,31 @@ private:
 	GLuint m_DummyVertexCount = 0;
 	GLuint m_VBODummyMesh = 0;
 	GLuint m_DummyMeshShader = 0;
+
+	GLuint m_FBOTexture0 = 0;
+	GLuint m_RBDepth0 = 0;
+	GLuint m_FBO0 = 0;
+	GLuint m_FBOTexture1 = 0;
+	GLuint m_RBDepth1 = 0;
+	GLuint m_FBO1 = 0;
+	GLuint m_FBOTexture2 = 0;
+	GLuint m_RBDepth2 = 0;
+	GLuint m_FBO2 = 0;
+	GLuint m_FBOTexture3 = 0;
+	GLuint m_RBDepth3 = 0;
+	GLuint m_FBO3 = 0;
+	GLuint m_FBOTexture4 = 0;
+	GLuint m_RBDepth4 = 0;
+	GLuint m_FBO4 = 0;
+	GLuint m_FBOTexture5 = 0;
+	GLuint m_RBDepth5 = 0;
+	GLuint m_FBO5 = 0;
+	GLuint m_FBOTexture6 = 0;
+	GLuint m_RBDepth6 = 0;
+	GLuint m_FBO6 = 0;
+	GLuint m_FBOTexture7 = 0;
+	GLuint m_RBDepth7 = 0;
+	GLuint m_FBO7 = 0;
+	GLuint mFullRectTexShader = 0;
 };
 

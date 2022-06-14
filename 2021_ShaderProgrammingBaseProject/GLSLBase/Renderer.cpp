@@ -33,12 +33,14 @@ void Renderer::Initialize(int windowSizeX, int windowSizeY)
 	m_LineFullRectShader = CompileShaders("./Shaders/FullRect.vs", "./Shaders/FullRect.fs");
 	m_TextureSandboxShader = CompileShaders("./Shaders/TextureSandbox.vs", "./Shaders/TextureSandbox.fs");
 	m_DummyMeshShader = CompileShaders("./Shaders/DummyMesh.vs", "./Shaders/DummyMesh.fs");
+	mFullRectTexShader = CompileShaders("./Shaders/FullRectTexture.vs", "./Shaders/FullRectTexture.fs");
 	//Create VBOs
 	CreateVertexBufferObjects();
 	CreateParticle(1000);
 	CreateLine(50);
 	CreateTextures();
 	CreateDummyMesh();
+	CreateFBOs();
 	m_TexRGB = CreatePngTexture("rgb.png");
 	//Initialize camera settings
 	m_v3Camera_Position = glm::vec3(0.f, 0.f, 1000.f);
@@ -284,7 +286,7 @@ void Renderer::CreateVertexBufferObjects()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(lecture4Pac1), &lecture4Pac1, GL_STATIC_DRAW);
 	//잦은 변경시 Dynamic_draw
 
-	rectSize = 0.1f;
+	rectSize = 1.f;
 	float lecture5_fullRect[]
 		=
 	{
@@ -595,6 +597,144 @@ void Renderer::CreateLine(int SegCount)
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * floatCount, lineVertices, GL_STATIC_DRAW);
 	m_VBOLineSegmentCount = vertexCount;
 	delete[] lineVertices;
+}
+
+void Renderer::CreateFBOs()
+{
+	glGenTextures(1, &m_FBOTexture0);
+	glBindTexture(GL_TEXTURE_2D, m_FBOTexture0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);	
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 512, 512, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+
+	//Depth는 따로 Attach안해도 기본으로 동작하는데 그럼 메인프레임버퍼 depth를 사용하기때문에
+	//새로 만들어서 쓰는게 안전함
+	glGenRenderbuffers(1, &m_RBDepth0);
+	glBindRenderbuffer(GL_RENDERBUFFER, m_RBDepth0);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, 512, 512);
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);	//바인드된거 비워주는거랬음 오류체크용도정도?
+
+	glGenFramebuffers(1, &m_FBO0);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_FBOTexture0, 0);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_RBDepth0);
+
+	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	if (status != GL_FRAMEBUFFER_COMPLETE)
+	{
+		std::cout << "something goes wrong while gen FBO\n";
+	}
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);	//다시 메인프레임버퍼를 바인드하게 바꿔줌.
+
+	glGenTextures(1, &m_FBOTexture1);
+	glBindTexture(GL_TEXTURE_2D, m_FBOTexture1);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 512, 512, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+
+	//Depth는 따로 Attach안해도 기본으로 동작하는데 그럼 메인프레임버퍼 depth를 사용하기때문에
+	//새로 만들어서 쓰는게 안전함
+	glGenRenderbuffers(1, &m_RBDepth1);
+	glBindRenderbuffer(GL_RENDERBUFFER, m_RBDepth1);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, 512, 512);
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);	//바인드된거 비워주는거랬음 오류체크용도정도?
+
+	glGenFramebuffers(1, &m_FBO1);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO1);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_FBOTexture1, 0);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_RBDepth1);
+
+	status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	if (status != GL_FRAMEBUFFER_COMPLETE)
+	{
+		std::cout << "something goes wrong while gen FBO\n";
+	}
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);	//다시 메인프레임버퍼를 바인드하게 바꿔줌.
+
+	glGenTextures(1, &m_FBOTexture2);
+	glBindTexture(GL_TEXTURE_2D, m_FBOTexture2);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 512, 512, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+
+	//Depth는 따로 Attach안해도 기본으로 동작하는데 그럼 메인프레임버퍼 depth를 사용하기때문에
+	//새로 만들어서 쓰는게 안전함
+	glGenRenderbuffers(1, &m_RBDepth2);
+	glBindRenderbuffer(GL_RENDERBUFFER, m_RBDepth2);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, 512, 512);
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);	//바인드된거 비워주는거랬음 오류체크용도정도?
+
+	glGenFramebuffers(1, &m_FBO2);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO2);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_FBOTexture2, 0);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_RBDepth2);
+
+	status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	if (status != GL_FRAMEBUFFER_COMPLETE)
+	{
+		std::cout << "something goes wrong while gen FBO\n";
+	}
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);	//다시 메인프레임버퍼를 바인드하게 바꿔줌.
+
+	glGenTextures(1, &m_FBOTexture3);
+	glBindTexture(GL_TEXTURE_2D, m_FBOTexture3);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 512, 512, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+
+	//Depth는 따로 Attach안해도 기본으로 동작하는데 그럼 메인프레임버퍼 depth를 사용하기때문에
+	//새로 만들어서 쓰는게 안전함
+	glGenRenderbuffers(1, &m_RBDepth3);
+	glBindRenderbuffer(GL_RENDERBUFFER, m_RBDepth3);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, 512, 512);
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);	//바인드된거 비워주는거랬음 오류체크용도정도?
+
+	glGenFramebuffers(1, &m_FBO3);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO3);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_FBOTexture3, 0);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_RBDepth3);
+
+	status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	if (status != GL_FRAMEBUFFER_COMPLETE)
+	{
+		std::cout << "something goes wrong while gen FBO\n";
+	}
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);	//다시 메인프레임버퍼를 바인드하게 바꿔줌.
+}
+
+void Renderer::DrawFullScreenTexture(GLuint texID)
+{	//glViewport(0, 0, 250, 250);
+	GLuint shader = mFullRectTexShader;
+	glUseProgram(shader);
+
+	int attribPosition = glGetAttribLocation(shader, "a_Position");
+	glEnableVertexAttribArray(attribPosition);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLineFullRect);	//x,y,z 
+	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float)* 3, 0);
+
+	int uniformSampler = glGetUniformLocation(shader, "u_Sampler");
+	glUniform1d(uniformSampler, 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texID);
+
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glDisableVertexAttribArray(attribPosition);
 }
 
 void Renderer::AddShader(GLuint ShaderProgram, const char* pShaderText, GLenum ShaderType)
@@ -1143,6 +1283,7 @@ void Renderer::Lecture6_TexSandbox()
 
 void Renderer::Lecture9_DummyMesh()
 {
+	//glViewport(0, 0, 250, 250);
 	GLuint shader = m_DummyMeshShader;
 	glUseProgram(shader);
 
@@ -1158,4 +1299,55 @@ void Renderer::Lecture9_DummyMesh()
 
 	glDrawArrays(GL_LINE_STRIP, 0, m_DummyVertexCount);
 	glDisableVertexAttribArray(attribPosition);
+}
+
+void Renderer::FBORender()
+{
+	//bind framebuffer object 0 
+	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO0);
+	//set viewport
+	glViewport(0, 0, 512, 512);	//fbo 사이즈를 512로했으니깐
+	//clear
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//Rendering (radar)
+	Lecture3_Particle();
+
+	//bind framebuffer object 1 
+	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO1);
+	//set viewport
+	glViewport(0, 0, 512, 512);	//fbo 사이즈를 512로했으니깐
+	//clear
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//Rendering (radar)
+	Lecture4_RainDrop();
+
+	//bind framebuffer object 2
+	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO2);
+	//set viewport
+	glViewport(0, 0, 512, 512);	//fbo 사이즈를 512로했으니깐
+	//clear
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//Rendering (radar)
+	Lecture5_LineSegment();
+
+	//bind framebuffer object 3
+	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO3);
+	//set viewport
+	glViewport(0, 0, 512, 512);	//fbo 사이즈를 512로했으니깐
+	//clear
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//Rendering (radar)
+	Lecture9_DummyMesh();
+
+	//restor frambuffer
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	//Draw textures
+	glViewport(0, 0, 250, 250);
+	DrawFullScreenTexture(m_FBOTexture0);
+	glViewport(250, 0, 250, 250);
+	DrawFullScreenTexture(m_FBOTexture1);
+	glViewport(0, 250, 250, 250);
+	DrawFullScreenTexture(m_FBOTexture2);
+	glViewport(250, 250, 250, 250);
+	DrawFullScreenTexture(m_FBOTexture3);
 }

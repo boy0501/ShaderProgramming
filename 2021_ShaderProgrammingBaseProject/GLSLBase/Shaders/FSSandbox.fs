@@ -81,7 +81,7 @@ vec4 DrawCircles()
 
 vec4 RadarCircle()
 {
-	float d = distance(vec2(0.5,0.5),v_Color.xy);
+	float d = distance(vec2(0.5,0.0),v_Color.xy);
 	float sinValue = sin(d*2*PI - u_Time*100);
 	sinValue = clamp(pow(sinValue,4),0,1);
 	
@@ -206,11 +206,11 @@ void main()
 	//gpu가 좋아지면서 써도 됨 
 
 	
-	FragColor = CrossPattern();
+	//FragColor = CrossPattern();
 	//FragColor = DrawMultipleCircles();
 	//FragColor = DrawCircles();
 	//FragColor = DrawCircleLine();
 	//FragColor = test();
-	//FragColor = RadarCircle() * v_ColorOverride;
+	FragColor = RadarCircle();
 	//FragColor = RadarStick();
 }

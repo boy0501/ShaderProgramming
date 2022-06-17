@@ -43,8 +43,8 @@ vec4 P3()
 {
 	vec4 returnValue = vec4(0);
 	vec2 newTexCoord = v_TexCoord;
-	newTexCoord.x = fract(v_TexCoord.x * 4) + floor(v_TexCoord.y * 4) * 0.5;
-	newTexCoord.y = fract(v_TexCoord.y * 4);
+	newTexCoord.x = fract(v_TexCoord.x * 2) + floor(v_TexCoord.y * 2) * 0.5;
+	newTexCoord.y = fract(v_TexCoord.y * 2);
 	returnValue = texture(u_TexSampler,newTexCoord);
 
 	return returnValue;
@@ -96,9 +96,8 @@ vec4 P7()
 	vec4 returnValue = vec4(0);
 	vec2 newTexCoord = v_TexCoord;
 	
-	newTexCoord.x = fract(v_TexCoord.x * 3);
- 	newTexCoord.y = newTexCoord.y/3.0 + (2 - floor(v_TexCoord.x*3.0))/3.0;
-
+	newTexCoord.x = fract(v_TexCoord.x * 4);
+ 	newTexCoord.y = newTexCoord.y/3.0 + fract((floor(v_TexCoord.x*4.0))/3.0);
 	returnValue = texture(u_TexSampler,newTexCoord);
 
 	return returnValue;
@@ -132,7 +131,19 @@ vec4 P9()
 	return returnValue;
 }
 
+vec4 P10()
+{
+	
+	vec4 returnValue = vec4(0);
+	vec2 newTexCoord = v_TexCoord;
+	newTexCoord.x = fract(v_TexCoord.x * 6) + floor(v_TexCoord.y *6) * 0.5 ;
+	newTexCoord.y = fract(v_TexCoord.y * 6) ;
+	
+	returnValue = texture(u_TexSampler,newTexCoord);
+	return returnValue;
+
+}
 void main()
 {
-	FragColor = P7();
+	FragColor = P10();
 }

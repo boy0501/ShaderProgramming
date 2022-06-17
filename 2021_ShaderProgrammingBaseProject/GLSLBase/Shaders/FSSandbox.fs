@@ -207,10 +207,10 @@ void main()
 
 	
 	//FragColor = CrossPattern();
-	//FragColor = DrawMultipleCircles();
+	FragColor = DrawMultipleCircles();
 	//FragColor = DrawCircles();
 	//FragColor = DrawCircleLine();
 	//FragColor = test();
-	FragColor = RadarCircle();
+	//FragColor = RadarCircle();
 	//FragColor = RadarStick();
 }

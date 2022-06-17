@@ -329,7 +329,7 @@ void Renderer::CreateParticle(int count)
 	int vertexCount = count * 3 * 2;
 
 	int index = 0;
-	float particleSize = 0.01f;
+	float particleSize = 0.1f;
 	for (int i = 0; i < count; i++)
 	{
 		float randomValueX = 0.f;
